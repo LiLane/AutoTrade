@@ -22,8 +22,8 @@ public class TradeService {
     @Resource
     private RemoteOrderServiceWrapper remoteOrderServiceWrapper;
 
-    public void trade(Trade trade) {
-        CreateOrderRequest createOrderRequest = buildOrder(trade);
+    public void trade(Trade trade, Long accountId) {
+        CreateOrderRequest createOrderRequest = buildOrder(trade, accountId);
         if (createOrderRequest == null) {
             return;
         }
@@ -32,7 +32,7 @@ public class TradeService {
         System.out.println("交易成功,request=" + JSON.toJSONString(createOrderRequest));
     }
 
-    private CreateOrderRequest buildOrder(Trade trade) {
+    private CreateOrderRequest buildOrder(Trade trade, Long accountId) {
         if (BigDecimal.valueOf(0.0000001).compareTo(trade.getAmout()) > 0) {
             return null;
         }
@@ -40,7 +40,7 @@ public class TradeService {
         OrderType orderType = TradeType.BUY == trade.getTradeType() ? OrderType.BUY_LIMIT : OrderType.SELL_LIMIT;
 
         CreateOrderRequest createOrderReq = new CreateOrderRequest();
-        createOrderReq.accountId = String.valueOf(ThreadCache.getUserId());
+        createOrderReq.accountId = String.valueOf(accountId);
         createOrderReq.amount = trade.getAmout().toPlainString();
         createOrderReq.price = trade.getPrice().toPlainString();
         createOrderReq.symbol = trade.getBase() + trade.getQuote();

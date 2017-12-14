@@ -57,6 +57,7 @@ public class RemoteAccountServiceWrapper {
                 client.get("/v1/account/accounts/" + accountId + "/balance", null, new TypeReference<ApiResponse<AssetResponse>>() {
                 });
         AssetResponse assetResponse = resp.checkAndReturn();
+        assetResponse.setUserId(accountId);
 //        System.out.println("查询账号余额信息,assetResponse=" + JSON.toJSONString(assetResponse));
         return assetResponse;
     }

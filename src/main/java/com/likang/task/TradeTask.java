@@ -72,18 +72,18 @@ public class TradeTask implements Runnable {
             trade.setBase(symbol.getBaseCurrency());
             trade.setQuote(symbol.getQuoteCurrency());
 
-            trade(trade, scale);
+            trade(trade, scale, assetResponse.getUserId());
         }
     }
 
-    private void trade(Trade trade, Integer scale) {
+    private void trade(Trade trade, Integer scale, Long accountId) {
         try {
             BigDecimal amount = trade.getAmout().setScale(scale, RoundingMode.FLOOR);
             trade.setAmout(amount);
-            tradeService.trade(trade);
+            tradeService.trade(trade, accountId);
         } catch (Exception e) {
             if (scale > 0) {
-                trade(trade, scale - 1);
+                trade(trade, scale - 1, accountId);
             }
         }
     }
@@ -109,7 +109,7 @@ public class TradeTask implements Runnable {
         trade.setBase(symbol.getBaseCurrency());
         trade.setQuote(symbol.getQuoteCurrency());
 
-        tradeService.trade(trade);
+        tradeService.trade(trade, assetResponse.getUserId());
     }
 
     private Symbol chooseOneSymbol() {
