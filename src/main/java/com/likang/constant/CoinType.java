@@ -6,7 +6,8 @@ package com.likang.constant;
  * Time: 上午11:54
  */
 public enum CoinType {
-    BTC(1, "btc", "比特币");
+    USDT(1, "usdt", "美元代币"),
+    BTC(2, "btc", "比特币");
     private Integer id;
     private String name;
     private String desc;

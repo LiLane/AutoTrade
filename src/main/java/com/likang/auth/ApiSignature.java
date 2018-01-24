@@ -20,7 +20,7 @@ import java.util.TreeMap;
 
 /**
  * API签名，签名规范：
- * <p/>
+ * <p>
  * http://docs.aws.amazon.com/zh_cn/general/latest/gr/signature-version-2.html
  *
  * @author liaoxuefeng
@@ -93,6 +93,9 @@ public class ApiSignature {
      * @return URL编码后的字符串
      */
     public static String urlEncode(String s) {
+        if (s == null) {
+            return "";
+        }
         try {
             return URLEncoder.encode(s, "UTF-8").replaceAll("\\+", "%20");
         } catch (UnsupportedEncodingException e) {

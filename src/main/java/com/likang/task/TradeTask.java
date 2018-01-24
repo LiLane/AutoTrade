@@ -8,7 +8,6 @@ import com.likang.domain.Trade;
 import com.likang.domain.response.AssetResponse;
 import com.likang.domain.response.MarketDepthResponse;
 import com.likang.service.TradeService;
-import com.likang.util.ThreadCache;
 import com.likang.wrapper.RemoteAccountServiceWrapper;
 import com.likang.wrapper.RemoteBusinessServiceWrapper;
 import org.springframework.stereotype.Component;
@@ -49,7 +48,7 @@ public class TradeTask implements Runnable {
             }
             Symbol symbol = new Symbol();
             symbol.setBaseCurrency(wallet.getCurrency());
-            symbol.setQuoteCurrency(CoinType.BTC.getName());
+            symbol.setQuoteCurrency(CoinType.USDT.getName());
 
             MarketDepthResponse marketDepthResponse = remoteBusinessServiceWrapper.getMarket(symbol);
             if (marketDepthResponse == null) {
@@ -59,9 +58,10 @@ public class TradeTask implements Runnable {
 
             Integer sellIndex = (int) (Math.random() * 10) + 2;
             Integer scale = 13;
-            BigDecimal sellPrice = marketPrice.multiply(BigDecimal.valueOf(100 + sellIndex)).divide(BigDecimal.valueOf(100), scale, BigDecimal.ROUND_HALF_UP);
+            BigDecimal sellPrice = marketPrice.multiply(BigDecimal.valueOf(100 + sellIndex)).divide(BigDecimal
+                    .valueOf(100), scale, BigDecimal.ROUND_HALF_UP);
             BigDecimal amout = wallet.getBalance();
-            if (sellPrice.multiply(amout).compareTo(BigDecimal.valueOf(0.01)) < 0) {
+            if (sellPrice.multiply(amout).compareTo(BigDecimal.valueOf(100)) < 0) {
                 continue;
             }
 
@@ -89,8 +89,8 @@ public class TradeTask implements Runnable {
     }
 
     private void buy(AssetResponse assetResponse) {
-        AssetResponse.Wallet wallet = assetResponse.getTradeWallet(CoinType.BTC.getName());
-        if (wallet.getBalance().compareTo(BigDecimal.valueOf(0.01)) < 0) {
+        AssetResponse.Wallet wallet = assetResponse.getTradeWallet(CoinType.USDT.getName());
+        if (wallet.getBalance().compareTo(BigDecimal.valueOf(100)) < 0) {
             System.out.println("btc余额不足,balance=" + wallet.getBalance());
             return;
         }
@@ -99,8 +99,9 @@ public class TradeTask implements Runnable {
         BigDecimal marketPrice = marketDepthResponse.getBuyPrice(0);
 
         Integer buyIndex = (int) (Math.random() * 5) + 1;
-        BigDecimal buyPrice = marketPrice.multiply(BigDecimal.valueOf(100 - buyIndex)).divide(BigDecimal.valueOf(100), 7, BigDecimal.ROUND_HALF_UP);
-        BigDecimal amout = BigDecimal.valueOf(0.01).divide(buyPrice, 7, BigDecimal.ROUND_HALF_UP);
+        BigDecimal buyPrice = marketPrice.multiply(BigDecimal.valueOf(100 - buyIndex)).divide(BigDecimal.valueOf(100)
+                , 7, BigDecimal.ROUND_HALF_UP);
+        BigDecimal amout = BigDecimal.valueOf(100).divide(buyPrice, 7, BigDecimal.ROUND_HALF_UP);
 
         Trade trade = new Trade();
         trade.setAmout(amout);
@@ -119,7 +120,7 @@ public class TradeTask implements Runnable {
         }
         List<Symbol> symbols = new ArrayList<>();
         for (Symbol symbol : totalSymbols) {
-            if (CoinType.BTC.getName().equals(symbol.quoteCurrency)) {
+            if (CoinType.USDT.getName().equals(symbol.quoteCurrency)) {
                 symbols.add(symbol);
             }
         }
